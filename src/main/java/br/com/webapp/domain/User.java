@@ -1,9 +1,18 @@
 package br.com.webapp.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
+
+@Table(name = "USER")
 public class User extends Domain{
 	
+	@Column(name = "NAME", nullable = false)
 	private String name;
+	
+	@Column(name = "EMAIL", nullable = false, updatable = false, unique = true)
 	private String email;
+	
+	@Column(name = "PASSWORD", nullable = false)
 	private String password;
 	
 	public String getName() {
