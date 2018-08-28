@@ -14,5 +14,5 @@ public interface IController {
 	
 	default User loadLoggedUser(HttpSession session) {
 		return (User) session.getAttribute("user");
-	} 
+	}
 }

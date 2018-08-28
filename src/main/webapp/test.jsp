@@ -7,6 +7,8 @@
 </head>
 <body>
     
+    Bem vindo ${user.name}</body>
+    
     <form action="/upload" method="POST" enctype="multipart/form-data" style="width: 250px; margin: 5px">
     
     	<link href="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/css/ratchet.css" rel="stylesheet"/>

@@ -24,4 +24,9 @@ public class User extends Domain{
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	@Override
+	public String toString() {
+		return "User [name=" + name + ", email=" + email + "]";
+	}
 }
