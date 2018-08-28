@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import br.com.webapp.domain.User;
 
 @Controller
-public class ManagerController implements IController{
+public class ManagerController{
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String redirectToLoginPage(User user, Model model) {    

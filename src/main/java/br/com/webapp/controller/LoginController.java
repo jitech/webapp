@@ -1,28 +1,23 @@
 package br.com.webapp.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import br.com.webapp.domain.User;
 
 @Controller
-@SessionAttributes("user")
 public class LoginController implements IController{
 	
-	@ModelAttribute("user")
-	public User loadUser() {
-		return new User();
-	}
-	
     @RequestMapping(value = "/enter", method = RequestMethod.POST)
-    public String enter(@ModelAttribute("user") User user, Model model) {
+    public String enter(User user, HttpSession session) {
         
     	try {
-    			user.setName("Jonas Goulart");
+    			user.setName("Jonas Goulart");    			
+    			session.setAttribute("user", user);
+    			loadLog().info("User logged: "+loadLoggedUser(session).getEmail());
     			return "home"; 
     		
     	}catch(Exception ex) {

@@ -1,6 +1,6 @@
 package br.com.webapp.domain;
 
-public class User {
+public class User extends Domain{
 	
 	private String name;
 	private String email;
