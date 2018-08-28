@@ -6,5 +6,6 @@
     <title>Teste</title>
 </head>
 <body>
-    Error</body>
+    Error
+</body>
 </html>

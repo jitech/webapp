@@ -7,13 +7,10 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body class="body">
-
-    <jsp:include page="header.jsp"/>
-    
-    <div class="content">
-    	HOME
+	
+	<div class="footer">
+    	Footer
     </div>
     
-    <jsp:include page="footer.jsp"/>
-    
+</body>
 </html>

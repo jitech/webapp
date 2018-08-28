@@ -6,14 +6,11 @@
     <title>Teste</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body class="body">
-
-    <jsp:include page="header.jsp"/>
+<body class="body">	
     
-    <div class="content">
-    	HOME
+    <div class="header">
+    	Bem vindo ${user.name}
     </div>
     
-    <jsp:include page="footer.jsp"/>
-    
+</body>
 </html>
