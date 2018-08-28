@@ -6,5 +6,5 @@
     <title>Teste</title>
 </head>
 <body>
-    Bem vindo ${name}</body>
+    Bem vindo ${user.name}</body>
 </html>

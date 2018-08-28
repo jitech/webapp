@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+  pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -7,17 +10,11 @@
 </head>
 <body>
     
-    <form action="/enter" method="POST">
-    	<input type="text" name="email" id="email"/>
-    	<input type="password" name="password" id="password"/>
+    <form:form action="/enter" method="POST" modelAttribute="user">
+    	<form:input path="email" />
+    	<form:password path="password" />
     	<button type="submit">Entrar</button>
-    </form>
-    
-    <form action="/upload" method="POST" enctype="multipart/form-data">
- 		<label for="file">Arquivo</label>
- 		<input type="file" name="file" />
- 		<input type="submit" name="submit" value="Upload" />
-	</form>
+    </form:form>
     
 </body>
 </html>

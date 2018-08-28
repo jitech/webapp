@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 public interface IController {
 
-	default Logger getLog() {
+	default Logger loadLog() {
 		return Logger.getLogger(this.getClass().getName());
 	} 
 }
