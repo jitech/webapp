@@ -11,7 +11,7 @@
     <jsp:include page="header.jsp"/>
     
     <div class="content">
-    	<a href="test">Test</a>
+    	HOME
     </div>
     
     <jsp:include page="footer.jsp"/>
