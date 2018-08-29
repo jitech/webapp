@@ -65,9 +65,15 @@ public class TestController implements IController{
 				code.loadComplexity(file.getAbsolutePath());		
 				
 				List<Object> listParams = new ArrayList<Object>();
-				listParams.add(5);
+				//listParams.add(5);
 				
-				code.isCorrectMethod(file.getAbsolutePath(), "fatorar", listParams, 125);
+				//code.isCorrectMethod(file.getAbsolutePath(), "fatorar", listParams, 125);
+				
+				listParams = new ArrayList<Object>();
+				listParams.add(2);
+				listParams.add(2);
+				
+				code.isCorrectMethod(file.getAbsolutePath(), "sum", listParams, 4);
 				return "sucess";
 				
 		}catch(Exception ex) {

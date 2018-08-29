@@ -2,9 +2,7 @@ package br.com.webapp.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
@@ -37,9 +35,9 @@ public class CodeAnalyserUtil implements ICoverageVisitor{
 		return complexity;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
 	public boolean isCorrectMethod(final String file, final String methodName, List<Object> listParams, Object expected) throws Exception {
 		
-		@SuppressWarnings("rawtypes")
 		Class params[] = new Class[listParams.size()];
 		
 		for(int count = 0 ; count < params.length ; count++) {
@@ -51,13 +49,10 @@ public class CodeAnalyserUtil implements ICoverageVisitor{
 		
 		URLClassLoader child = new URLClassLoader(urls);
 		
-		@SuppressWarnings("rawtypes")
 		Class cls = Class.forName(iClassCoverage.getName().replaceAll("/", "."),true, child);
 
 		Object obj = cls.newInstance();
-	
-		@SuppressWarnings("unchecked")
-		
+			
 		Method[] methods = cls.getMethods();
 		
 		for(int count = 0 ; count < methods.length ; count++) {
@@ -68,23 +63,33 @@ public class CodeAnalyserUtil implements ICoverageVisitor{
 				
 				if(method.getParameterCount() > 1) {
 					
-					method = cls.getDeclaredMethod(methodName, params);
+					method = cls.getDeclaredMethod(methodName, params);					
+					LoggerUtil.info(getClass(), ">>> Analisando o método: "+method.getName());
 					
-					if(method.invoke(obj, params) == expected) {				
+					if(method.invoke(obj, listParams) == expected) {
+						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" retornou os valores esperados.");
 						return true;
+					}else {						
+						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" não retornou os valores esperados.");
+						return false;
 					}
 					
 				}else {
 					
-					method = cls.getDeclaredMethod(methodName, params[count]);
-									
-					if(method.invoke(obj, params[count]) == expected) {				
+					method = cls.getDeclaredMethod(methodName, params[count]);				
+					LoggerUtil.info(getClass(), ">>> Analisando o método: "+method.getName());
+					
+					if(method.invoke(obj, listParams.get(count)) == expected) {	
+						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" retornou os valores esperados.");
 						return true;
+					}else {					
+						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" não retornou os valores esperados.");
+						return false;
 					}
 				}
 			}
 		}
 		
 		return false;
-	}
+	}		
 }
