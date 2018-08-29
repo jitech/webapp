@@ -1,6 +1,8 @@
 package br.com.webapp.controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -59,7 +61,13 @@ public class TestController implements IController{
 				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 				MultipartFile multipartFile = multipartRequest.getFile("file");   	    	
 				File file = FileUtil.saveFileIntoDirectory(multipartFile, loadLoggedUser(session).getEmail());											
-				new CodeAnalyserUtil().loadComplexity(file.getAbsolutePath());			
+				CodeAnalyserUtil code = new CodeAnalyserUtil();
+				code.loadComplexity(file.getAbsolutePath());		
+				
+				List<Object> listParams = new ArrayList<Object>();
+				listParams.add(5);
+				
+				code.isCorrectMethod(file.getAbsolutePath(), "fatorar", listParams, 125);
 				return "sucess";
 				
 		}catch(Exception ex) {
