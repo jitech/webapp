@@ -9,8 +9,11 @@
 </head>
 <body class="body">	
     
-    <div class="header">
-    	Bem vindo ${user.name} <br/> <a href="/test">Go Test</a> <br/> <a href="/exit">Sair</a> <br/> <a href="/test/generate">Gerar</a>
+    <div class="header">    	
+    	<div class="header-menu">
+    		<a href="/test/generate">Gerar</a> | <a href="/exit">Sair</a>
+    	</div>
+    	<div class="header-welcome">Olá ${user.name}</div>
     </div>
     
 </body>

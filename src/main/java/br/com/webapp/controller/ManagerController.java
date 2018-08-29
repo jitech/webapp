@@ -12,26 +12,8 @@ import br.com.webapp.domain.User;
 @Controller
 public class ManagerController implements IController{
 	
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String redirectToTestPage(User user, Model model, HttpSession session) {    
-    	     	
-    	try {
-				if(loadLoggedUser(session) != null) {
-					model.addAttribute("user", loadLoggedUser(session));
-					return "test";			
-				}else {
-					model.addAttribute("user",user);
-					return "login";
-				}				 
-		
-    	}catch(Exception ex) {
-    		ex.printStackTrace();
-    		return "error";
-    	}
-    }
-	
 	@RequestMapping(value = {"/login", "/upload", "/enter", "/home"}, method = RequestMethod.GET)
-    public String redirectToHomePageByUploadRequisition(User user, Model model, HttpSession session) { 
+    public String redirectToHomeOrLoginPage(User user, Model model, HttpSession session) { 
 		
 		try {
 				if(loadLoggedUser(session) != null) {

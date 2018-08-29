@@ -24,3 +24,13 @@
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
+
+.header-welcome{
+	display: table;
+	float: right;
+}
+
+.header-menu{
+	display: table;
+	float: left;
+}

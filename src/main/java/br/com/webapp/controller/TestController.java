@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import br.com.webapp.domain.User;
 import br.com.webapp.utils.CodeAnalyserUtil;
 import br.com.webapp.utils.FileUtil;
 import br.com.webapp.utils.LoggerUtil;
@@ -21,7 +22,7 @@ import br.com.webapp.utils.LoggerUtil;
 public class TestController implements IController{
 
 	@RequestMapping(value = "/test/generate", method = RequestMethod.GET)
-    public String generate(Model model, HttpSession session) {
+    public String generate(Model model, User user, HttpSession session) {
         
     	try {			
     			model.addAttribute("test", "JAVATEST");
@@ -34,7 +35,7 @@ public class TestController implements IController{
     }
 	
 	@RequestMapping(value = "/test/load/{code}", method = RequestMethod.GET)
-    public String loadTest(@PathVariable String code, Model model, HttpSession session) {
+    public String loadTest(@PathVariable String code, User user, Model model, HttpSession session) {
         
     	try {		
     			if(loadLoggedUser(session) != null) {
