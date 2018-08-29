@@ -10,7 +10,9 @@
 
     <jsp:include page="header.jsp"/>
     
-    <div class="content">
+    <div class="content"> 
+    	Welcome to test: ${test}
+    	<br/>  	
     	<form action="/upload" method="POST" enctype="multipart/form-data" style="width: 250px;">  
 			<label for="file">Selecionar .jar</label>
 			<input type="file" id="file" name="file" accept="jar/*">

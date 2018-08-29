@@ -11,9 +11,7 @@
     <jsp:include page="header.jsp"/>
     
     <div class="content">
-    	Test: ${test}
-    	<br/>
-    	Código com baixa complexidade e que atende aos requisitos funcionais estipulados.
+    	Sucesso!
     </div>
     
     <jsp:include page="footer.jsp"/>

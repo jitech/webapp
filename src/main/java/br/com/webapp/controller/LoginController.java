@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import br.com.webapp.domain.User;
+import br.com.webapp.utils.LoggerUtil;
 
 @Controller
 public class LoginController implements IController{
@@ -17,17 +18,17 @@ public class LoginController implements IController{
     	try {
     			user.setName("Jonas Goulart");    			
     			session.setAttribute("user", user);
-    			loadLog().info("User logged: "+loadLoggedUser(session));
+    			LoggerUtil.info(getClass(), "User logged: "+loadLoggedUser(session));
     			return "home"; 
     		
     	}catch(Exception ex) {
     		ex.printStackTrace();
-    		loadLog().error("Ocorreu um erro ao realizar o login do usuário "+user.getEmail());
+    		LoggerUtil.error(getClass(), "Ocorreu um erro ao realizar o login do usuário "+user.getEmail());
     		return "login";
     	}    
     }
     
-    @RequestMapping(value = "/exit", method = RequestMethod.POST)
+    @RequestMapping(value = "/exit", method = RequestMethod.GET)
     public String exit(User user, HttpSession session) {
         
     	try {
@@ -36,7 +37,6 @@ public class LoginController implements IController{
     		
     	}catch(Exception ex) {
     		ex.printStackTrace();
-    		loadLog().error("Ocorreu um erro ao realizar o logout do usuário "+user.getEmail());
     		return "home";
     	}    
     }
