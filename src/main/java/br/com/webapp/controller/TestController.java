@@ -62,9 +62,10 @@ public class TestController implements IController{
 				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 				MultipartFile multipartFile = multipartRequest.getFile("file");   	    	
 				File file = FileUtil.saveFileIntoDirectory(multipartFile, loadLoggedUser(session).getEmail());											
-				CodeAnalyserUtil code = new CodeAnalyserUtil();
-				//code.loadComplexity(file.getAbsolutePath());	
-				code.generatedReport(file.getAbsolutePath());
+				
+				
+				/*CodeAnalyserUtil code = new CodeAnalyserUtil();
+				code.analisar(file.getAbsolutePath());
 				
 				List<Object> listParams = new ArrayList<Object>();
 
@@ -83,10 +84,10 @@ public class TestController implements IController{
 					LoggerUtil.info(getClass(), "--------------------------------------------------------");
 					LoggerUtil.info(getClass(), ">> Classe: "+report.getCoverage().getName());
 					LoggerUtil.info(getClass(), ">> Método testado: "+report.getAnalizedMethod());
-					LoggerUtil.info(getClass(), ">> Status do método testado: "+report.isMethodSucess());
+					LoggerUtil.info(getClass(), ">> Método testado is OK? : "+report.isMethodSucess());
 					LoggerUtil.info(getClass(), ">> Complexidade do método: "+report.getCoverage().getComplexityCounter().getTotalCount());
 					LoggerUtil.info(getClass(), "--------------------------------------------------------");
-				}
+				}*/
 				
 				return "sucess";
 				

@@ -20,8 +20,9 @@ public class CodeAnalyserUtil implements ICoverageVisitor{
 	private Analyzer analyzer;	
 	private List<CodeReport> codeReport = new ArrayList<CodeReport>();
 	
-	public CodeAnalyserUtil() {
-		analyzer = new Analyzer(new ExecutionDataStore(), this);
+	public CodeAnalyserUtil(String location) throws IOException {
+		analyzer = new Analyzer(new ExecutionDataStore(), this);		
+		analyzer.analyzeAll(new File(location));
 	}
 	
 	@Override
@@ -29,19 +30,12 @@ public class CodeAnalyserUtil implements ICoverageVisitor{
 		codeReport.add(new CodeReport(coverage, null, false));	
 	}
 	
-	public List<CodeReport> getReport(){
-		return codeReport;
-	}
-	
-	public void generatedReport(final String location) throws IOException {
-		LoggerUtil.info(getClass(), "Analisando código...");
-		analyzer.analyzeAll(new File(location));
-	}
-	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void executeMethodAnalyser(final String file, final String methodName, List<Object> listParams, Object expected) throws Exception {
+	public CodeReport getReport(final String file, final String methodName, List<Object> listParams, Object expected) throws Exception {
 		
 		try {
+				LoggerUtil.info(getClass(), "Gerando relatório...");
+			
 				Class params[] = new Class[listParams.size()];
 				for(int count = 0 ; count < params.length ; count++) {
 					params[count] = listParams.get(count).getClass();
@@ -66,13 +60,24 @@ public class CodeAnalyserUtil implements ICoverageVisitor{
 								codeReport.setMethodSucess(true);
 							}
 							
-							return;
+							LoggerUtil.info(getClass(), "--------------------------------------------------------");
+							LoggerUtil.info(getClass(), ">> Classe: "+codeReport.getCoverage().getName());
+							LoggerUtil.info(getClass(), ">> Método testado: "+codeReport.getAnalizedMethod());
+							LoggerUtil.info(getClass(), ">> Método testado is OK? : "+codeReport.isMethodSucess());
+							LoggerUtil.info(getClass(), ">> Complexidade do método: "+codeReport.getCoverage().getComplexityCounter().getTotalCount());
+							LoggerUtil.info(getClass(), "--------------------------------------------------------");
+						
+							
+							return codeReport;
 						}
 					}
 				}
+				
+				return null;
 							
 		}catch(Exception ex) {
 			ex.printStackTrace();
+			return null;
 		}
 	}		
 }
