@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import br.com.webapp.domain.CodeReport;
 import br.com.webapp.domain.User;
 import br.com.webapp.utils.CodeAnalyserUtil;
 import br.com.webapp.utils.FileUtil;
@@ -62,18 +63,31 @@ public class TestController implements IController{
 				MultipartFile multipartFile = multipartRequest.getFile("file");   	    	
 				File file = FileUtil.saveFileIntoDirectory(multipartFile, loadLoggedUser(session).getEmail());											
 				CodeAnalyserUtil code = new CodeAnalyserUtil();
-				code.loadComplexity(file.getAbsolutePath());		
+				//code.loadComplexity(file.getAbsolutePath());	
+				code.generatedReport(file.getAbsolutePath());
 				
 				List<Object> listParams = new ArrayList<Object>();
-				//listParams.add(5);
-				
-				//code.isCorrectMethod(file.getAbsolutePath(), "fatorar", listParams, 125);
-				
+
 				listParams = new ArrayList<Object>();
 				listParams.add(2);
 				listParams.add(2);
 				
-				code.isCorrectMethod(file.getAbsolutePath(), "sum", listParams, 4);
+				code.executeMethodAnalyser(file.getAbsolutePath(), "sum", listParams, 4);
+				
+				listParams = new ArrayList<Object>();
+				listParams.add(5);
+				
+				code.executeMethodAnalyser(file.getAbsolutePath(), "fatorar", listParams, 120);
+				
+				for(CodeReport report : code.getReport()) {
+					LoggerUtil.info(getClass(), "--------------------------------------------------------");
+					LoggerUtil.info(getClass(), ">> Classe: "+report.getCoverage().getName());
+					LoggerUtil.info(getClass(), ">> Método testado: "+report.getAnalizedMethod());
+					LoggerUtil.info(getClass(), ">> Status do método testado: "+report.isMethodSucess());
+					LoggerUtil.info(getClass(), ">> Complexidade do método: "+report.getCoverage().getComplexityCounter().getTotalCount());
+					LoggerUtil.info(getClass(), "--------------------------------------------------------");
+				}
+				
 				return "sucess";
 				
 		}catch(Exception ex) {

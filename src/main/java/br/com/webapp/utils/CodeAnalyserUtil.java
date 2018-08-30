@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jacoco.core.analysis.Analyzer;
@@ -12,84 +13,66 @@ import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.ICoverageVisitor;
 import org.jacoco.core.data.ExecutionDataStore;
 
+import br.com.webapp.domain.CodeReport;
+
 public class CodeAnalyserUtil implements ICoverageVisitor{
 
-	private Analyzer analyzer;
-	private int complexity;
-	private IClassCoverage iClassCoverage;
+	private Analyzer analyzer;	
+	private List<CodeReport> codeReport = new ArrayList<CodeReport>();
 	
 	public CodeAnalyserUtil() {
 		analyzer = new Analyzer(new ExecutionDataStore(), this);
 	}
 	
 	@Override
-	public void visitCoverage(IClassCoverage coverage) {
-		complexity = coverage.getComplexityCounter().getTotalCount();
-		iClassCoverage = coverage;
+	public void visitCoverage(IClassCoverage coverage) {		
+		codeReport.add(new CodeReport(coverage, null, false));	
 	}
 	
-	public int loadComplexity(final String location) throws IOException {
+	public List<CodeReport> getReport(){
+		return codeReport;
+	}
+	
+	public void generatedReport(final String location) throws IOException {
 		LoggerUtil.info(getClass(), "Analisando código...");
 		analyzer.analyzeAll(new File(location));
-		LoggerUtil.info(getClass(), ">>> Complexidade do código: "+complexity);
-		return complexity;
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
-	public boolean isCorrectMethod(final String file, final String methodName, List<Object> listParams, Object expected) throws Exception {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void executeMethodAnalyser(final String file, final String methodName, List<Object> listParams, Object expected) throws Exception {
 		
-		Class params[] = new Class[listParams.size()];
-		
-		for(int count = 0 ; count < params.length ; count++) {
-			params[count] = listParams.get(count).getClass();
-		}
-		
-		URL url = new URL("file:"+file);
-		URL[] urls = {url};
-		
-		URLClassLoader child = new URLClassLoader(urls);
-		
-		Class cls = Class.forName(iClassCoverage.getName().replaceAll("/", "."),true, child);
-
-		Object obj = cls.newInstance();
-			
-		Method[] methods = cls.getMethods();
-		
-		for(int count = 0 ; count < methods.length ; count++) {
-			
-			if(methods[count].getName().equals(methodName)) {
+		try {
+				Class params[] = new Class[listParams.size()];
+				for(int count = 0 ; count < params.length ; count++) {
+					params[count] = listParams.get(count).getClass();
+				}
 				
-				Method method = methods[count];
-				
-				if(method.getParameterCount() > 1) {
+				URL[] urls = {new URL("file:"+file)};
+										
+				for(CodeReport codeReport : codeReport) {					
+					Class clazz = Class.forName(codeReport.getCoverage().getName().replaceAll("/", "."),true, new URLClassLoader(urls));
+					Object obj = clazz.newInstance();						
+					Method[] methods = clazz.getMethods();
 					
-					method = cls.getDeclaredMethod(methodName, params);					
-					LoggerUtil.info(getClass(), ">>> Analisando o método: "+method.getName());
-					
-					if(method.invoke(obj, listParams) == expected) {
-						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" retornou os valores esperados.");
-						return true;
-					}else {						
-						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" não retornou os valores esperados.");
-						return false;
-					}
-					
-				}else {
-					
-					method = cls.getDeclaredMethod(methodName, params[count]);				
-					LoggerUtil.info(getClass(), ">>> Analisando o método: "+method.getName());
-					
-					if(method.invoke(obj, listParams.get(count)) == expected) {	
-						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" retornou os valores esperados.");
-						return true;
-					}else {					
-						LoggerUtil.info(getClass(), ">>> Método: "+method.getName()+" não retornou os valores esperados.");
-						return false;
+					for(int count = 0 ; count < methods.length ; count++) {					
+						if(methods[count].getName().equals(methodName)) {
+							
+							codeReport.setAnalizedMethod(methodName);
+							
+							Method method = methods[count];	
+							method = clazz.getDeclaredMethod(methodName, params);	
+														
+							if(method.invoke(obj, listParams.toArray()) == expected) {
+								codeReport.setMethodSucess(true);
+							}
+							
+							return;
+						}
 					}
 				}
-			}
+							
+		}catch(Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		return false;
 	}		
 }
