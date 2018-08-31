@@ -5,79 +5,75 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.ICoverageVisitor;
 import org.jacoco.core.data.ExecutionDataStore;
 
-import br.com.webapp.domain.CodeReport;
+import br.com.webapp.domain.TestCodeCase;
+import br.com.webapp.domain.UserTestCode;
 
 public class CodeAnalyserUtil implements ICoverageVisitor{
 
 	private Analyzer analyzer;	
-	private List<CodeReport> codeReport = new ArrayList<CodeReport>();
+	private UserTestCode userTestCode;
 	
-	public CodeAnalyserUtil(String location) throws IOException {
+	public CodeAnalyserUtil(UserTestCode userTestCode) throws IOException {
+		this.userTestCode = userTestCode;
+		
+		LoggerUtil.info(getClass(), "--------------------------------------------------------");
+		LoggerUtil.info(getClass(), "Test: "+userTestCode.getTestCode().getDescribe());
+		LoggerUtil.info(getClass(), "Language: "+userTestCode.getTestCode().getLanguage());
+		
 		analyzer = new Analyzer(new ExecutionDataStore(), this);		
-		analyzer.analyzeAll(new File(location));
-	}
-	
-	@Override
-	public void visitCoverage(IClassCoverage coverage) {		
-		codeReport.add(new CodeReport(coverage, null, false));	
+		analyzer.analyzeAll(new File(userTestCode.getTestFilePath()));
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public CodeReport getReport(final String file, final String methodName, List<Object> listParams, Object expected) throws Exception {
+	@Override
+	public void visitCoverage(IClassCoverage coverage) {
 		
 		try {
-				LoggerUtil.info(getClass(), "Gerando relatório...");
+				LoggerUtil.info(getClass(), "--------------------------------------------------------");
+				LoggerUtil.info(getClass(), "Classe analisada: "+coverage.getSourceFileName());
+				LoggerUtil.info(getClass(), "Complexidade Ciclomática: "+coverage.getComplexityCounter().getTotalCount());
+		
+				for(TestCodeCase testCodeCase : userTestCode.getTestCode().getTestCodeCases()) {
+						
+					Class params[] = new Class[testCodeCase.getMethodInputParameters().size()];
+					
+					for(int count = 0 ; count < params.length ; count++) {
+						params[count] = testCodeCase.getMethodInputParameters().get(count).getClass();
+					}
 			
-				Class params[] = new Class[listParams.size()];
-				for(int count = 0 ; count < params.length ; count++) {
-					params[count] = listParams.get(count).getClass();
-				}
-				
-				URL[] urls = {new URL("file:"+file)};
-										
-				for(CodeReport codeReport : codeReport) {					
-					Class clazz = Class.forName(codeReport.getCoverage().getName().replaceAll("/", "."),true, new URLClassLoader(urls));
+					URL[] urls = {new URL("file:"+userTestCode.getTestFilePath())};
+					
+					Class clazz = Class.forName(coverage.getName().replaceAll("/", "."),true, new URLClassLoader(urls));
 					Object obj = clazz.newInstance();						
 					Method[] methods = clazz.getMethods();
 					
 					for(int count = 0 ; count < methods.length ; count++) {					
-						if(methods[count].getName().equals(methodName)) {
-							
-							codeReport.setAnalizedMethod(methodName);
+						if(methods[count].getName().equals(testCodeCase.getMethodName())) {
+									
+							LoggerUtil.info(getClass(), ">>> Testando o método: "+testCodeCase.getMethodName());
 							
 							Method method = methods[count];	
-							method = clazz.getDeclaredMethod(methodName, params);	
+							method = clazz.getDeclaredMethod(testCodeCase.getMethodName(), params);	
 														
-							if(method.invoke(obj, listParams.toArray()) == expected) {
-								codeReport.setMethodSucess(true);
+							if(method.invoke(obj, testCodeCase.getMethodInputParameters().toArray()) == testCodeCase.getMethodOutputExpected()) {
+								LoggerUtil.info(getClass(), ">>>> Método retornou o esperado");
+							}else {
+								LoggerUtil.info(getClass(), ">>>> Método não retornou o esperado");
 							}
 							
-							LoggerUtil.info(getClass(), "--------------------------------------------------------");
-							LoggerUtil.info(getClass(), ">> Classe: "+codeReport.getCoverage().getName());
-							LoggerUtil.info(getClass(), ">> Método testado: "+codeReport.getAnalizedMethod());
-							LoggerUtil.info(getClass(), ">> Método testado is OK? : "+codeReport.isMethodSucess());
-							LoggerUtil.info(getClass(), ">> Complexidade do método: "+codeReport.getCoverage().getComplexityCounter().getTotalCount());
-							LoggerUtil.info(getClass(), "--------------------------------------------------------");
-						
-							
-							return codeReport;
+							break;
 						}
 					}
 				}
-				
-				return null;
-							
+		
 		}catch(Exception ex) {
 			ex.printStackTrace();
-			return null;
 		}
-	}		
+	}
 }
