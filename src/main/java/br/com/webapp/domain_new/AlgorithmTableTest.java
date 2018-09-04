@@ -22,8 +22,8 @@ public class AlgorithmTableTest extends Domain{
 	}
 	
 	@TableTest
-	public int load(int x) {
+	public int sum(int x, int y) {
 		
-		return x;
+		return x + y;
 	}
 }

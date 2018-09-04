@@ -16,7 +16,7 @@ public class MethodUtil {
 				Object obj = new AlgorithmTableTest();
 				
 				for (final Method method : obj.getClass().getDeclaredMethods()) {
-		            if (method.isAnnotationPresent(TableTest.class)) {
+		            if (method.isAnnotationPresent(TableTest.class)) {		            	
 		                methods.add(method);
 		            }
 		        }
@@ -31,7 +31,7 @@ public class MethodUtil {
 	
 	public static boolean testMethod(Method methodToTest, Object parameter, Object expected){
 		
-		try {			
+		try {						
 				if(methodToTest.invoke(Class.forName(methodToTest.getDeclaringClass().getName()).newInstance(), parameter).equals(expected)) {
 					return true;
 				}
