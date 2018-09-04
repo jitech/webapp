@@ -1,0 +1,48 @@
+/* Test */
+{
+	"code": "xxxx",
+	"name": "xxxx",	
+	"features":[
+		{
+			"code": "xxxx",
+			"name": "xxxx",
+			"methods":[
+				{
+					"name": "xxx",
+					"parameters":[5, 5]
+				},
+				{
+					"name": "xxx",
+					"parameters":[5, 5]
+				}
+			]
+		}
+	]
+}
+
+/* User test */
+{
+	"testCode": "xxxx",
+	"userCode": "xxxx",
+	"features": [
+		{
+			"featureCode": "xxxx",
+			"status": "OK"
+		}
+	]
+}
+
+/* User */
+{
+	"email": "xxxx",
+	"name": "xxxx",
+	"password": "******",
+	"enterpriseCode": "xxxx"
+}
+
+/* Enterprise */
+{
+	"cnpj": "xxxxxxxxxxx/xx",
+	"name": "xxxx",
+	"status:" "ACTIVE"
+}
